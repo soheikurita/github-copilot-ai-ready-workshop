@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { Header } from './components/Header';
+import { ProductDetail } from './components/ProductDetail';
 import { SearchBar } from './components/SearchBar';
 import { ProductGrid } from './components/ProductGrid';
 import { products } from './data/products';
@@ -18,18 +20,31 @@ export default function App() {
       <Header productCount={products.length} />
 
       <main className="main">
-        <div className="main__intro">
-          <h2 className="main__heading">おすすめのアウトドア用品</h2>
-          <p className="main__lead">
-            登山・キャンプに役立つアイテムを取り揃えています。キーワードで検索してみましょう。
-          </p>
-        </div>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <div className="main__intro">
+                  <h2 className="main__heading">おすすめのアウトドア用品</h2>
+                  <p className="main__lead">
+                    登山・キャンプに役立つアイテムを取り揃えています。キーワードで検索してみましょう。
+                  </p>
+                </div>
 
-        <SearchBar value={query} onChange={setQuery} />
+                <SearchBar value={query} onChange={setQuery} />
 
-        <p className="result-count">{visibleProducts.length} 件の商品</p>
+                <p className="result-count">{visibleProducts.length} 件の商品</p>
 
-        <ProductGrid products={visibleProducts} />
+                <ProductGrid products={visibleProducts} />
+              </>
+            }
+          />
+          <Route
+            path="/product/:id"
+            element={<ProductDetail products={products} />}
+          />
+        </Routes>
       </main>
 
       <footer className="footer">
