@@ -36,4 +36,29 @@ describe('searchProducts', () => {
   it('ヒットしない場合は空配列を返す', () => {
     expect(searchProducts(sample, '存在しない商品')).toEqual([]);
   });
+
+  it('複数キーワードを AND 条件で扱う（再現ケース）', () => {
+    const result = searchProducts(sample, 'キャンプ テント');
+    expect(result.map((p) => p.id)).toEqual([3]);
+  });
+
+  it('全角スペース区切りの複数キーワードも AND 条件で扱う', () => {
+    const result = searchProducts(sample, 'キャンプ　テント');
+    expect(result.map((p) => p.id)).toEqual([3]);
+  });
+
+  it('連続スペースと前後スペースを無視する', () => {
+    const result = searchProducts(sample, '  キャンプ   テント  ');
+    expect(result.map((p) => p.id)).toEqual([3]);
+  });
+
+  it('いずれかのキーワードを含まない場合は除外する', () => {
+    expect(searchProducts(sample, 'キャンプ 登山')).toEqual([]);
+  });
+
+  it('元の商品配列を変更しない', () => {
+    const original = [...sample];
+    searchProducts(sample, 'キャンプ テント');
+    expect(sample).toEqual(original);
+  });
 });
